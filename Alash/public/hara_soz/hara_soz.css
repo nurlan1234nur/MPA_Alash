@@ -1,0 +1,38 @@
+body {
+    font-family: sans-serif;
+    background: #e0e0e0;
+    padding: 2rem;
+    margin: 0;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  #question-container {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  #options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+  
