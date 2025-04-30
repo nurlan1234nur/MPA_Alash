@@ -1,5 +1,6 @@
 let questions = [];
-let usedIndices = new Set();
+let currentIndex = 0;
+let shuffledIndices = [];
 
 const questionContainer = document.getElementById('question-container');
 const prevBtn = document.getElementById('prev-btn');
@@ -13,6 +14,11 @@ async function loadQuestions() {
         const data = await response.json();
         // Convert the object to an array of questions
         questions = Object.values(data);
+        
+        // Create and shuffle indices
+        shuffledIndices = Array.from({length: questions.length}, (_, i) => i);
+        shuffleArray(shuffledIndices);
+        
         renderQuestion();
     } catch (error) {
         console.error('Error loading questions:', error);
@@ -20,36 +26,36 @@ async function loadQuestions() {
     }
 }
 
-function getRandomQuestion() {
-    if (usedIndices.size >= questions.length) {
-        return null;
+// Fisher-Yates shuffle algorithm
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
-    
-    let randomIndex;
-    do {
-        randomIndex = Math.floor(Math.random() * questions.length);
-    } while (usedIndices.has(randomIndex));
-    
-    usedIndices.add(randomIndex);
-    return randomIndex;
+    return array;
 }
 
 function renderQuestion() {
-    const index = getRandomQuestion();
-    if (index === null) {
-        questionContainer.innerHTML = '<p class="end-message">Бүх асуултууд дууссан!</p>';
+    if (currentIndex >= questions.length) {
+        questionContainer.innerHTML = '<p class="end-message">Бүх бадагууд дууссан!</p>';
         nextBtn.style.display = 'none';
         return;
     }
     
-    const line1 = questions[index];
-    const line2 = questions[index + 1] || "";
+    const questionIndex = shuffledIndices[currentIndex];
+    const question = questions[questionIndex];
+    
+    // Replace \n with actual newline and split
+    const lines = question.replace(/\\n/g, '\n').split('\n');
+    
     questionContainer.innerHTML = `
         <div class="question-box">
-            <p class="question-line">${line1}</p>
-            <p class="question-line">${line2}</p>
+            <p class="question-line">${lines[0]}</p>
+            <p class="question-line">${lines[1]}</p>
         </div>
     `;
+    
+    currentIndex++;
 }
 
 nextBtn.onclick = () => {

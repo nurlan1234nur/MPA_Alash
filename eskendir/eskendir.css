@@ -43,6 +43,11 @@ h1 {
     line-height: 1.6;
     color: #34495e;
     margin-bottom: 1rem;
+    display: block;
+}
+
+.question-line:last-child {
+    margin-bottom: 0;
 }
 
 .controls {
