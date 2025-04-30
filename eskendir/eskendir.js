@@ -1,42 +1,68 @@
-const questions = [
-    "Нэгэн хаан байжээ. Түүний нэр Ескендир.",
-    "Тэр хаан их амжилтад хүрсэн ч шуналтай байжээ.",
-    "Хүмүүс түүний авирыг гайхан ярилцдаг байв.",
-    "Нэгэн өдөр түүний өмнө мэргэн хүн ирэв...",
-    // … энэ мэтчилэн шүлгийн мөрүүдийг үргэлжлүүлээрэй
-  ];
-  
-  let currentIndex = 0;
-  
-  const questionContainer = document.getElementById('question-container');
-  const prevBtn = document.getElementById('prev-btn');
-  const nextBtn = document.getElementById('next-btn');
-  const backBtn = document.getElementById('back-btn');
-  
-  function renderQuestion() {
-    const line1 = questions[currentIndex] || "";
-    const line2 = questions[currentIndex + 1] || "";
-    questionContainer.innerHTML = `<p>${line1}</p><p>${line2}</p>`;
-  }
-  
-  prevBtn.onclick = () => {
-    if (currentIndex >= 2) {
-      currentIndex -= 2;
-      renderQuestion();
+let questions = [];
+let usedIndices = new Set();
+
+const questionContainer = document.getElementById('question-container');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const backBtn = document.getElementById('back-btn');
+
+// Fetch questions from JSON file
+async function loadQuestions() {
+    try {
+        const response = await fetch('eskendir.json');
+        const data = await response.json();
+        // Convert the object to an array of questions
+        questions = Object.values(data);
+        renderQuestion();
+    } catch (error) {
+        console.error('Error loading questions:', error);
+        questionContainer.innerHTML = '<p class="error-message">Асуултуудыг ачахад алдаа гарлаа</p>';
     }
-  };
-  
-  nextBtn.onclick = () => {
-    if (currentIndex + 2 < questions.length) {
-      currentIndex += 2;
-      renderQuestion();
+}
+
+function getRandomQuestion() {
+    if (usedIndices.size >= questions.length) {
+        return null;
     }
-  };
-  
-  backBtn.onclick = () => {
+    
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * questions.length);
+    } while (usedIndices.has(randomIndex));
+    
+    usedIndices.add(randomIndex);
+    return randomIndex;
+}
+
+function renderQuestion() {
+    const index = getRandomQuestion();
+    if (index === null) {
+        questionContainer.innerHTML = '<p class="end-message">Бүх асуултууд дууссан!</p>';
+        nextBtn.style.display = 'none';
+        return;
+    }
+    
+    const line1 = questions[index];
+    const line2 = questions[index + 1] || "";
+    questionContainer.innerHTML = `
+        <div class="question-box">
+            <p class="question-line">${line1}</p>
+            <p class="question-line">${line2}</p>
+        </div>
+    `;
+}
+
+nextBtn.onclick = () => {
+    renderQuestion();
+};
+
+backBtn.onclick = () => {
     window.location.href = "../../index.html";
-  };
-  
-  // эхлэх үед харуулах
-  render
+};
+
+// Hide previous button as we don't need it anymore
+prevBtn.style.display = 'none';
+
+// Load questions when the page loads
+loadQuestions();
   
