@@ -9,7 +9,7 @@ const backBtn = document.getElementById('back-btn');
 // Fetch questions from JSON file
 async function loadQuestions() {
     try {
-        const response = await fetch('eskendir.json');
+        const response = await fetch('https://nurlan1234nur.github.io/MPA_Alash/eskendir/eskendir.json');
         const data = await response.json();
         // Convert the object to an array of questions
         questions = Object.values(data);
