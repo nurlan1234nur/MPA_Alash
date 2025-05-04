@@ -95,14 +95,18 @@ backBtn.onclick = () => {
 };
 
 // Add keyboard navigation
-document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowLeft" && currentIndex > 0) {
-    currentIndex--;
-    renderSaying();
-  } else if (event.key === "ArrowRight" && currentIndex < sayings.length - 1) {
-    currentIndex++;
-    renderSaying();
-  }
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        prevBtn.click();
+    } else if (e.key === 'ArrowRight') {
+        nextBtn.click();
+    } else if (e.key === 'Enter') {
+        // Toggle answer visibility when Enter is pressed
+        const answerLines = document.querySelectorAll('.answer-line');
+        answerLines.forEach(line => {
+            line.style.display = line.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 });
 
 // Load sayings when the page loads
