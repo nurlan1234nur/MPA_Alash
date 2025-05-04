@@ -66,15 +66,28 @@ button {
     transition: all 0.3s ease;
     background: #3498db;
     color: white;
+    min-width: 120px;
 }
 
 button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #2980b9;
+}
+
+button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 #back-btn {
     background: #e74c3c;
+}
+
+#back-btn:hover {
+    background: #c0392b;
 }
 
 .end-message {

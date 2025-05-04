@@ -55,25 +55,38 @@ function renderQuestion() {
         </div>
     `;
     
-    currentIndex++;
+    // Update button states
+    prevBtn.style.display = currentIndex > 0 ? 'block' : 'none';
+    nextBtn.style.display = currentIndex < questions.length - 1 ? 'block' : 'none';
 }
 
 nextBtn.onclick = () => {
-    renderQuestion();
+    if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+    }
+};
+
+prevBtn.onclick = () => {
+    if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+    }
 };
 
 backBtn.onclick = () => {
     window.location.href = "../../index.html";
 };
 
-// Hide previous button as we don't need it anymore
-prevBtn.style.display = 'none';
-
 // Add keyboard navigation
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'ArrowRight') {
-    renderQuestion();
-  }
+    if (event.key === 'ArrowLeft' && currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+    } else if (event.key === 'ArrowRight' && currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+    }
 });
 
 // Load questions when the page loads
