@@ -69,6 +69,13 @@ backBtn.onclick = () => {
 // Hide previous button as we don't need it anymore
 prevBtn.style.display = 'none';
 
+// Add keyboard navigation
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowRight') {
+    renderQuestion();
+  }
+});
+
 // Load questions when the page loads
 loadQuestions();
   

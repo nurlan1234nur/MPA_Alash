@@ -113,6 +113,17 @@ prevBtn.addEventListener("click", () => {
   }
 });
 
+// Add keyboard navigation
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    loadQuestion();
+  } else if (event.key === 'ArrowRight' && currentQuestionIndex < questions.length - 1) {
+    currentQuestionIndex++;
+    loadQuestion();
+  }
+});
+
 finishBtn.addEventListener("click", () => {
   questionText.textContent = "Quiz Completed!";
   optionsContainer.innerHTML = "";

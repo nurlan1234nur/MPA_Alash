@@ -91,5 +91,16 @@ const questions = [
     window.location.href = "../../index.html";
   };
   
+  // Add keyboard navigation
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft' && currentIndex > 0) {
+      currentIndex--;
+      showQuestion();
+    } else if (event.key === 'ArrowRight' && currentIndex < questions.length - 1) {
+      currentIndex++;
+      showQuestion();
+    }
+  });
+  
   showQuestion();
   
