@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alash Jurnal Quiz</title>
+  <title>Алаш Журнал</title>
   <link rel="stylesheet" href="alash_jurnal.css">
 </head>
 <body>
   <div class="container">
-    <h1>Alash Jurnal</h1>
-    <div id="quiz-container">
-      <p id="question-text"></p>
-      <input type="text" id="answer-input" placeholder="Хариултаа бичнэ үү">
-      <button id="check-btn">Шалгах</button>
-      <p id="result"></p>
-      <button id="next-btn">Дараагийн</button>
+    <h1>Алаш Журнал</h1>
+    <div id="question-container" class="question-container"></div>
+    <div class="button-container">
+      <button id="prev-btn" class="nav-btn">Өмнөх</button>
+      <button id="next-btn" class="nav-btn">Дараагийн</button>
+      <button id="back-btn" class="nav-btn">Буцах</button>
     </div>
-    <button id="back-btn">Буцах</button>
   </div>
 
   <script src="alash_jurnal.js"></script>

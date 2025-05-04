@@ -45,10 +45,10 @@ function renderSaying() {
   const sayingIndex = shuffledIndices[currentIndex];
   const saying = sayings[sayingIndex];
 
-  // Split the saying at : or - or , and show the first part as question
-  const parts = saying.split(/[:—,]/);
+  // Split the saying at : or - and show the first part as question
+  const parts = saying.split(/[:—]/);
   const question = parts[0].trim();
-  const answer = parts.slice(1).join(":").trim();
+  const answer = parts[1] ? parts[1].trim() : "";
 
   questionContainer.innerHTML = `
     <div class="question-box">
@@ -106,5 +106,4 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Load sayings when the page loads
-loadSayings();
-  
+loadSayings(); 
