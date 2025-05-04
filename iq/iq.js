@@ -1,106 +1,111 @@
-const questions = [
-    { 
-      question: "2 + 2 х 2 = ?", 
-      options: [4, 6, 8, 10], 
-      correctAnswer: 6 
-    },
-    { 
-      question: "3 x 5 = ?", 
-      options: [10, 12, 15, 18], 
-      correctAnswer: 15 
-    },
-    { 
-      question: "12 ÷ 4 = ?", 
-      options: [3, 4, 5, 6], 
-      correctAnswer: 3 
-    },
-    { 
-      question: "5 + 3 = ?", 
-      options: [6, 7, 8, 9], 
-      correctAnswer: 8 
-    },
-    { 
-      question: "7 x 9 = ?", 
-      options: [56, 63, 72, 81], 
-      correctAnswer: 63 
-    }
-  ];
-  
-  let currentIndex = 0;
-  let score = 0;
-  
-  const questionText = document.getElementById("question-text");
-  const optionsContainer = document.getElementById("options-container");
-  const checkBtn = document.getElementById("check-btn");
-  const result = document.getElementById("result");
-  const nextBtn = document.getElementById("next-btn");
-  const backBtn = document.getElementById("back-btn");
-  
-  function showQuestion() {
-    const question = questions[currentIndex];
-    questionText.textContent = question.question;
-    optionsContainer.innerHTML = "";
-  
-    question.options.forEach((option, index) => {
-      const optionLabel = document.createElement("label");
-      const optionInput = document.createElement("input");
-      optionInput.type = "radio";
-      optionInput.name = "option";
-      optionInput.value = option;
-  
-      optionLabel.appendChild(optionInput);
-      optionLabel.appendChild(document.createTextNode(option));
-      optionsContainer.appendChild(optionLabel);
-      optionsContainer.appendChild(document.createElement("br"));
-    });
-  
-    result.textContent = "";
+let questions = [];
+let currentIndex = 0;
+let shuffledIndices = [];
+
+const questionContainer = document.getElementById("question-container");
+const prevBtn = document.getElementById("prev-btn");
+const nextBtn = document.getElementById("next-btn");
+const backBtn = document.getElementById("back-btn");
+
+// Fetch questions from JSON file
+async function loadQuestions() {
+  try {
+    const response = await fetch("iq.json");
+    const data = await response.json();
+    questions = Object.values(data);
+
+    // Create and shuffle indices
+    shuffledIndices = Array.from({ length: questions.length }, (_, i) => i);
+    shuffleArray(shuffledIndices);
+
+    renderQuestion();
+  } catch (error) {
+    console.error("Error loading questions:", error);
+    questionContainer.innerHTML = '<p class="error-message">Асуултуудыг ачахад алдаа гарлаа</p>';
   }
+}
+
+// Fisher-Yates shuffle algorithm
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function renderQuestion() {
+  if (currentIndex >= questions.length) {
+    questionContainer.innerHTML = '<p class="end-message">Бүх асуултууд дууссан!</p>';
+    nextBtn.style.display = "none";
+    return;
+  }
+
+  const questionIndex = shuffledIndices[currentIndex];
+  const question = questions[questionIndex];
+
+  questionContainer.innerHTML = `
+    <div class="question-box">
+      <p class="question-line">${question.question}</p>
+      <p class="answer-line" style="display: none">Хариу: ${question.answer}</p>
+      <p class="explanation-line" style="display: none">Тайлбар: ${question.explanation}</p>
+      <button class="show-answer-btn" onclick="toggleAnswer()">Хариуг үзэх</button>
+    </div>
+  `;
+
+  // Update button states
+  prevBtn.style.display = currentIndex > 0 ? "block" : "none";
+  nextBtn.style.display = currentIndex < questions.length - 1 ? "block" : "none";
+}
+
+function toggleAnswer() {
+  const answerLine = document.querySelector(".answer-line");
+  const explanationLine = document.querySelector(".explanation-line");
+  const showAnswerBtn = document.querySelector(".show-answer-btn");
   
-  checkBtn.onclick = () => {
-    const selectedOption = document.querySelector("input[name='option']:checked");
-    
-    if (selectedOption) {
-      const selectedAnswer = Number(selectedOption.value);
-      const correctAnswer = questions[currentIndex].correctAnswer;
-  
-      if (selectedAnswer === correctAnswer) {
-        score++;
-        result.textContent = "Зөв!";
-        result.style.color = "green";
-      } else {
-        result.textContent = `Буруу! Зөв хариулт: ${correctAnswer}`;
-        result.style.color = "red";
-      }
-    } else {
-      result.textContent = "Хариулт сонгоно уу!";
-      result.style.color = "orange";
+  if (answerLine.style.display === "none") {
+    answerLine.style.display = "block";
+    explanationLine.style.display = "block";
+    showAnswerBtn.textContent = "Хариуг нуух";
+  } else {
+    answerLine.style.display = "none";
+    explanationLine.style.display = "none";
+    showAnswerBtn.textContent = "Хариуг үзэх";
+  }
+}
+
+nextBtn.onclick = () => {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  }
+};
+
+prevBtn.onclick = () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+};
+
+backBtn.onclick = () => {
+  window.location.href = "../../index.html";
+};
+
+// Add keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        prevBtn.click();
+    } else if (e.key === 'ArrowRight') {
+        nextBtn.click();
+    } else if (e.key === 'Enter') {
+        // Toggle answer visibility when Enter is pressed
+        const answerLines = document.querySelectorAll('.answer-line, .explanation-line');
+        answerLines.forEach(line => {
+            line.style.display = line.style.display === 'none' ? 'block' : 'none';
+        });
     }
-  };
-  
-  nextBtn.onclick = () => {
-    if (currentIndex < questions.length - 1) {
-      currentIndex++;
-      showQuestion();
-    } else {
-      alert(`Тест дууслаа! Таны оноо: ${score}`);
-    }
-  };
-  
-  backBtn.onclick = () => {
-    window.location.href = "../../index.html";
-  };
-  
-  // Add keyboard navigation
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft' && currentIndex > 0) {
-      currentIndex--;
-      showQuestion();
-    } else if (event.key === 'ArrowRight' && currentIndex < questions.length - 1) {
-      currentIndex++;
-      showQuestion();
-    }
-  });
-  
-  showQuestion();
-  
+});
+
+// Load questions when the page loads
+loadQuestions(); 
