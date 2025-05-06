@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html lang="kk">
+<html lang="mn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тапқырлық</title>
-    <link rel="stylesheet" href="tap.css">
+    <title>Тап мақал</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Тапқырлық</h1>
-        <div class="game-area">
-            <div id="word-display" class="word-display"></div>
-            <div id="timer" class="timer">30</div>
-            <div id="task" class="task"></div>
-            <div class="button-group">
-                <button id="start-btn" class="start-btn">Бастау</button>
-                <button id="stop-btn" class="stop-btn" disabled>Аяқтау</button>
-            </div>
+        <h1 style="margin: 20px; font-size:36px;">Тап мақал</h1>
+        <div id="word-display" class="question-box">
+            <span class="question-line"></span>
         </div>
+        <div id="timer" class="question-number"></div>
+        <div id="task" class="question-box">
+            <span class="question-line"></span>
+        </div>
+        <div class="controls">
+            <button id="start-btn">Эхлүүлэх</button>
+            <button id="stop-btn" disabled>Зогсоох</button>
+            <button id="next-btn" disabled>Дараах үг</button>
+            <button id="show-proverbs-btn">Хариу харуулах</button>
+        </div>
+        <ul id="proverbs-list" class="question-box hidden">
+            <li class="question-line"></li>
+        </ul>
     </div>
     <script src="tap.js"></script>
 </body>
