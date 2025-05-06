@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Quiz</title>
+  <title>English Vocabulary</title>
   <link rel="stylesheet" href="english.css">
 </head>
 <body>
   <div class="container">
-    <h1>English Vocabulary Quiz</h1>
+    <h1>English Vocabulary</h1>
     <div id="quiz-box">
       <p id="question-text"></p>
-      <div id="options"></div>
+      <div id="answer-box" class="hidden">
+        <p>Хариулт: <span id="correct-answer"></span></p>
+      </div>
+      <div class="controls">
+        <button id="prev-btn">Previous</button>
+        <button id="show-answer-btn">Хариултыг нээх (Enter)</button>
+        <button id="next-btn">Next</button>
+      </div>
+      <p class="keyboard-hint">Keyboard: ← → (Шилжих), Enter (Хариулт нээх/нуух)</p>
     </div>
-    <div id="controls">
-      <button id="prev-btn">Previous</button>
-      <button id="next-btn">Next</button>
-      <button id="finish-btn">Finish</button>
-    </div>
-    <p id="score-text"></p>
   </div>
   <script src="english.js"></script>
 </body>
