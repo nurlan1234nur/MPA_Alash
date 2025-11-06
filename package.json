@@ -1,0 +1,16 @@
+{
+  "name": "mpa_alash",
+  "version": "1.0.0",
+  "description": "Энэ бол React ашиглан хийгдсэн тест бөглөх веб апп юм. Апп нь JSON файлаас асуултуудыг уншиж, хэрэглэгчид тест бөглөх боломжийг олгодог.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
