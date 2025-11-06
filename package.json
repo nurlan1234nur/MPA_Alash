@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Энэ бол React ашиглан хийгдсэн тест бөглөх веб апп юм. Апп нь JSON файлаас асуултуудыг уншиж, хэрэглэгчид тест бөглөх боломжийг олгодог.",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
