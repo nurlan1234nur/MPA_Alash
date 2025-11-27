@@ -102,13 +102,15 @@
             border-left: 4px solid #4caf50;
             padding: 15px;
             border-radius: 8px;
-            display: none;
             margin-top: 15px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .answer-reveal.show {
-            display: block;
-            animation: slideIn 0.3s ease;
+            visibility: visible;
+            opacity: 1;
         }
 
         @keyframes slideIn {
@@ -247,7 +249,9 @@
             <div class="controls">
                 <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">← Артқа</button>
                 <button class="btn btn-primary" id="showAnswerBtn" onclick="showAnswer()">Жауабын көрсету</button>
-                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display: none;">Келесі →</button>
+            </div>
+            <div class="controls" style="margin-top: 10px;">
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="width: 100%;">Келесі →</button>
             </div>
         </div>
 
@@ -319,16 +323,12 @@
             document.getElementById('answerText').textContent = q.answer;
             
             document.getElementById('answerReveal').classList.remove('show');
-            document.getElementById('showAnswerBtn').style.display = 'block';
-            document.getElementById('nextBtn').style.display = 'none';
             document.getElementById('prevBtn').disabled = currentIndex === 0;
             answerShown = false;
         }
 
         function showAnswer() {
             document.getElementById('answerReveal').classList.add('show');
-            document.getElementById('showAnswerBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'block';
             answerShown = true;
         }
 
