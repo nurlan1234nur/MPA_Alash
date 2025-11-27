@@ -4,7 +4,148 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alash Quiz App</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 900px;
+      width: 100%;
+      padding: 50px 40px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #667eea;
+      font-size: 36px;
+      margin-bottom: 40px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .topics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .topic {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 15px;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topic::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .topic:hover::before {
+      left: 100%;
+    }
+
+    .topic:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .topic:active {
+      transform: translateY(-2px);
+    }
+
+    /* Special colors for different topics */
+    .topic:nth-child(1) {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .topic:nth-child(2) {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .topic:nth-child(3) {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+
+    .topic:nth-child(4) {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+    }
+
+    .topic:nth-child(5) {
+      background: linear-gradient(135deg, #fa709a, #fee140);
+    }
+
+    .topic:nth-child(6) {
+      background: linear-gradient(135deg, #30cfd0, #330867);
+    }
+
+    .topic:nth-child(7) {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      color: #333;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 40px 25px;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 30px;
+      }
+
+      .topics {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .topic {
+        padding: 25px 15px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      .topic {
+        padding: 20px 15px;
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -19,7 +160,5 @@
       <a href="taphirlih/tap.html" class="topic">Тапқырлық</a>
     </div>
   </div>
-
-  <script src="app.js"></script>
 </body>
 </html>

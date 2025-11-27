@@ -1,27 +1,429 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Vocabulary</title>
-  <link rel="stylesheet" href="english.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irregular Verbs Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 20px;
+            border-radius: 8px;
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-type {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .given-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .given-label {
+            color: #1565c0;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .given-text {
+            color: #0d47a1;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .answer-reveal {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .answer-reveal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .answer-label {
+            color: #2e7d32;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .answer-item {
+            color: #1b5e20;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .counter {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .completion-screen.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .completion-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .completion-text {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>English Vocabulary</h1>
-    <div id="quiz-box" class="question-box">
-      <span id="question-text" class="question-line"></span>
-      <div id="answer-box" class="answer-box hidden">
-        <p>Хариулт: <span id="correct-answer"></span></p>
-      </div>
-      <div class="controls">
-        <button id="prev-btn">Previous</button>
-        <button id="show-answer-btn">Хариултыг нээх (Enter)</button>
-        <button id="next-btn">Next</button>
-      </div>
-      <p class="keyboard-hint">Keyboard: ← → (Шилжих), Enter (Хариулт нээх/нуух)</p>
+    <div class="container">
+        <div class="header">
+            <h1>Irregular Verbs Quiz</h1>
+        </div>
+
+        <div id="loadingScreen" class="loading">
+            Loading...
+        </div>
+
+        <div id="errorScreen" style="display: none;">
+            <div class="error">
+                <strong>Error!</strong><br>
+                Could not load english.json file. Please make sure the file exists.
+            </div>
+        </div>
+
+        <div id="quizScreen" style="display: none;">
+            <div class="counter" id="counter">Question 1 / 100</div>
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-type" id="questionType">Find the missing forms:</div>
+                
+                <div class="given-info">
+                    <div class="given-label" id="givenLabel">Given:</div>
+                    <div class="given-text" id="givenText"></div>
+                </div>
+
+                <div class="question-text" id="questionText">What are the other forms?</div>
+
+                <div class="answer-reveal" id="answerReveal">
+                    <div id="answersContainer"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">← Previous</button>
+                <button class="btn btn-primary" id="showAnswerBtn" onclick="showAnswer()">Show Answer</button>
+            </div>
+            <div class="controls" style="margin-top: 10px;">
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="width: 100%;">Next →</button>
+            </div>
+        </div>
+
+        <div class="completion-screen" id="completionScreen">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-text">Congratulations! You've completed all questions!</div>
+            <button class="btn btn-restart" onclick="restart()">Restart Quiz</button>
+        </div>
     </div>
-  </div>
-  <script src="english.js"></script>
+
+    <script>
+        let verbs = [];
+        let questions = [];
+        let currentIndex = 0;
+        let askedForms = new Set();
+
+        async function loadVerbs() {
+            try {
+                const response = await fetch('english.json');
+                if (!response.ok) {
+                    throw new Error('Cannot load file');
+                }
+                verbs = await response.json();
+                
+                if (!Array.isArray(verbs) || verbs.length === 0) {
+                    throw new Error('Invalid data format');
+                }
+                
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('quizScreen').style.display = 'block';
+                initQuiz();
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('errorScreen').style.display = 'block';
+            }
+        }
+
+        function normalizeValue(val) {
+            if (Array.isArray(val)) {
+                return val;
+            }
+            return [val];
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function initQuiz() {
+            questions = [];
+            askedForms.clear();
+
+            const forms = ['Infinitive', 'PastSimple', 'PastParticiple'];
+            
+            for (const verb of verbs) {
+                const availableForms = forms.filter(form => {
+                    const value = verb[form];
+                    const normalized = Array.isArray(value) ? value.join(',') : value;
+                    const key = `${normalized}`;
+                    return !askedForms.has(key);
+                });
+
+                if (availableForms.length === 0) continue;
+
+                const givenForm = availableForms[Math.floor(Math.random() * availableForms.length)];
+                const givenValue = verb[givenForm];
+                const givenKey = Array.isArray(givenValue) ? givenValue.join(',') : givenValue;
+                askedForms.add(givenKey);
+
+                const askedForms_arr = forms.filter(f => f !== givenForm);
+
+                questions.push({
+                    givenForm: givenForm,
+                    givenValue: normalizeValue(givenValue),
+                    askedForms: askedForms_arr,
+                    answers: {
+                        [askedForms_arr[0]]: normalizeValue(verb[askedForms_arr[0]]),
+                        [askedForms_arr[1]]: normalizeValue(verb[askedForms_arr[1]])
+                    }
+                });
+            }
+
+            questions = shuffleArray(questions);
+            displayQuestion();
+        }
+
+        function getFormLabel(form) {
+            const labels = {
+                'Infinitive': 'Infinitive',
+                'PastSimple': 'Past Simple',
+                'PastParticiple': 'Past Participle'
+            };
+            return labels[form] || form;
+        }
+
+        function displayQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById('counter').textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+            document.getElementById('progressBar').style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+            
+            document.getElementById('givenLabel').textContent = getFormLabel(q.givenForm) + ':';
+            document.getElementById('givenText').textContent = q.givenValue.join(' / ');
+            
+            const askedFormsText = q.askedForms.map(f => getFormLabel(f)).join(' and ');
+            document.getElementById('questionText').textContent = `What are the ${askedFormsText}?`;
+
+            let answersHTML = '';
+            for (const form of q.askedForms) {
+                const values = q.answers[form];
+                answersHTML += `
+                    <div class="answer-label">${getFormLabel(form)}:</div>
+                    <div class="answer-item">${values.join(' / ')}</div>
+                `;
+            }
+            document.getElementById('answersContainer').innerHTML = answersHTML;
+            
+            document.getElementById('answerReveal').classList.remove('show');
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+        }
+
+        function showAnswer() {
+            document.getElementById('answerReveal').classList.add('show');
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                displayQuestion();
+            } else {
+                document.getElementById('quizScreen').style.display = 'none';
+                document.getElementById('completionScreen').classList.add('show');
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                displayQuestion();
+            }
+        }
+
+        function restart() {
+            currentIndex = 0;
+            document.getElementById('quizScreen').style.display = 'block';
+            document.getElementById('completionScreen').classList.remove('show');
+            initQuiz();
+        }
+
+        loadVerbs();
+    </script>
 </body>
 </html>
