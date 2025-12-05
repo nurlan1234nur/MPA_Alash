@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сөздер тізімі</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #667eea; }
+        .header h1 { color: #667eea; font-size: 36px; margin-bottom: 10px; }
+        .header p { color: #666; font-size: 16px; }
+        .search-box { margin-bottom: 30px; }
+        .search-input {
+            width: 100%; padding: 15px 20px; font-size: 16px;
+            border: 2px solid #e0e0e0; border-radius: 10px; transition: .3s ease;
+        }
+        .search-input:focus {
+            outline: none; border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        .dictionary-list { max-height: 600px; overflow-y: auto; padding-right: 10px; }
+        .dictionary-list::-webkit-scrollbar { width: 8px; }
+        .dictionary-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .dictionary-list::-webkit-scrollbar-thumb { background: #667eea; border-radius: 10px; }
+        .dictionary-item {
+            background: #f8f9fa; padding: 20px; margin-bottom: 15px;
+            border-radius: 12px; border-left: 4px solid #667eea; transition: .3s ease;
+        }
+        .dictionary-item:hover { transform: translateX(5px); box-shadow: 0 4px 12px rgba(102,126,234,0.2); }
+        .word { font-size: 20px; font-weight: 700; color: #333; margin-bottom: 8px; }
+        .meaning { font-size: 16px; color: #666; line-height: 1.6; }
+        .no-results { text-align: center; padding: 40px; color: #999; font-size: 18px; }
+        .count { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .header h1 { font-size: 28px; }
+            .word { font-size: 18px; }
+            .meaning { font-size: 15px; }
+            .dictionary-list { max-height: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Толь бичиг</h1>
+            <p>Арабша, Парсыша үгсийн тайлбар</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="Үг хайх...">
+        </div>
+
+        <div class="count" id="count"></div>
+        <div class="dictionary-list" id="dictionaryList"><div class="no-results">Ачаалж байна...</div></div>
+    </div>
+
+    <script>
+        let dictionaryData = [];
+
+        // a.json-оос өгөгдөл унших
+        fetch('hara_soz.json')
+            .then(response => response.json())
+            .then(data => {
+                dictionaryData = data;
+                renderList(dictionaryData);
+            })
+            .catch(err => {
+                document.getElementById('dictionaryList').innerHTML = `<div class='no-results'>Өгөгдөл ачаалагдсангүй</div>`;
+            });
+
+        const listEl = document.getElementById('dictionaryList');
+        const countEl = document.getElementById('count');
+        const searchEl = document.getElementById('searchInput');
+
+        function renderList(arr) {
+            if (!arr.length) {
+                listEl.innerHTML = `<div class='no-results'>Үр дүн олдсонгүй</div>`;
+                countEl.textContent = '';
+                return;
+            }
+
+            countEl.textContent = `${arr.length} үг`; 
+
+            listEl.innerHTML = arr.map(item => `
+                <div class="dictionary-item">
+                    <div class="word">${item.word}</div>
+                    <div class="meaning">${item.meaning}</div>
+                </div>
+            `).join('');
+        }
+
+        searchEl.addEventListener('input', e => {
+            const q = e.target.value.toLowerCase().trim();
+            const filtered = dictionaryData.filter(i => 
+                i.word.toLowerCase().includes(q) || i.meaning.toLowerCase().includes(q)
+            );
+            renderList(filtered);
+        });
+    </script>
+</body>
+</html>
