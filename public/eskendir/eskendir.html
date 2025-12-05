@@ -1,22 +1,361 @@
 <!DOCTYPE html>
 <html lang="mn">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ескендир</title>
-    <link rel="stylesheet" href="eskendir.css" />
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ескендир - Шүлгүүд</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .poems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .poem-btn {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #dee2e6;
+            padding: 30px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .poem-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+
+        .poem-btn:hover .poem-number {
+            color: white;
+        }
+
+        .poem-btn:hover .poem-title {
+            color: white;
+        }
+
+        .poem-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .poem-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .poem-view {
+            display: none;
+        }
+
+        .poem-view.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .poem-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 400px;
+        }
+
+        .poem-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .poem-number-large {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin-right: 20px;
+        }
+
+        .poem-title-large {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .poem-text {
+            white-space: pre-wrap;
+            line-height: 1.9;
+            font-size: 17px;
+            color: #333;
+            font-family: 'Georgia', serif;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-back {
+            background: #e0e0e0;
+            color: #333;
+            flex: 1;
+        }
+
+        .btn-nav {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            flex: 1;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .counter {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .poems-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .poem-btn {
+                padding: 20px 15px;
+            }
+
+            .poem-number {
+                font-size: 36px;
+            }
+
+            .poem-title {
+                font-size: 14px;
+            }
+
+            .poem-card {
+                padding: 20px;
+            }
+
+            .poem-number-large {
+                font-size: 36px;
+                margin-right: 15px;
+            }
+
+            .poem-title-large {
+                font-size: 20px;
+            }
+
+            .poem-text {
+                font-size: 15px;
+                line-height: 1.7;
+            }
+        }
+    </style>
+</head>
+<body>
     <div class="container">
-      <h1>Ескендир</h1>
-      <div id="question-container"></div>
-      <div class="controls">
-        <button id="prev-btn">Өмнөх</button>
-        <button id="next-btn">Дараах</button>
-      </div>
-      <button id="back-btn">Буцах</button>
+        <div class="header">
+            <h1>Ескендір</h1>
+            <p>Шүлгүүдийн цуглуулга</p>
+        </div>
+
+        <div id="gridView">
+            <div class="poems-grid" id="poemsGrid"></div>
+        </div>
+
+        <div id="poemView" class="poem-view">
+            <div class="counter" id="counter"></div>
+            
+            <div class="poem-card">
+                <div class="poem-header">
+                    <div class="poem-number-large" id="poemNumberLarge"></div>
+                    <div class="poem-title-large" id="poemTitleLarge"></div>
+                </div>
+                <div class="poem-text" id="poemTextLarge"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-back" onclick="backToGrid()">← Буцах</button>
+                <button class="btn btn-nav" id="prevBtn" onclick="prevPoem()">← Өмнөх</button>
+                <button class="btn btn-nav" id="nextBtn" onclick="nextPoem()">Дараах →</button>
+            </div>
+        </div>
     </div>
 
-    <script src="eskendir.js"></script>
-  </body>
+    <script>
+        const poemsData = {
+            "poems": [
+                {
+                    "title": "Поэма 1",
+                    "text": "Арты жетті ағызып шапқан аттай,\nКөбік бейне көк тасқа шаққан оттай.\nШашырайды жан-жаққа: ай астында\nЖердегілер құлайды шатқалақтай.\nЖапырылды жағалай майда құрақ,\nАруананың ботасы ойда аңырап:\nҚатын-бала бақырған, ит ұлыған,\nАқ толқынның ішінде қой жамырап.\nАт жоғалды тепкілеп сағанаққа,\nАтан, үлек жұтқызбай сұғанаққа,\nТалай жанды арқалап, жас бұзауды\nҚазығымен қалдырды суға ноқта.\nТағдыр елді тап қылды тағы азапқа,\nАйғай-сүрең ұзады жаға жаққа,\nАдасқанды шақырып алдағылар\nҚыр басында күпіні жағады отқа.\nАқын, күйші теңіздің ортасында,\n(Ел қайғысын тағы да тартасың да...)\nАқ диюдай қамаған асау толқын\nЗәулім биік солардың жартасын да.\nОлар отыр шошынып төңіректен,\n«Міне, саған жақсылық тәңір еткен!»\nЫрғып кетіп барады теңіз жаққа,\nБақан, уық, кебеже, темір кетпен.\nУа, көк теңіз! Жалмауыз жайынын да\nОлжа тілеп оянды қойыныңда.\nҚоңырау да соғылды су ішінен\nИрең еткен нар бота мойыныңда.\nУа, сұмдық-ай!.. Ет жүрек шошынады:\nТарқатып та болмаған шашын әлі\nАқ көбіктің ішінен қарауытып,\nӨлген сұлу бұрымы шашылады.\nОсыған да ай арсыз нұр құяды,\nСуда сәби саусағы тырбияды.\nҚұрман бейне құлпытас... Білер ме едің,\nҚайда кетіп сорлының тұр қиялы?.."
+                },
+                {
+                    "title": "Ақсақ киік",
+                    "text": "Ізінде қаны қалды, өзі қашып\nБарады бала киік қырдан асып;\nНеліктен аңшы жігіт бірге кетпей\nБармағын иегіне тұрды басып?..\nАлдынан көп түнеген келді биік,\nБұл жолы аунамайды құмын сүйіп.\nЖарасын қолтығына қатты қысып\nШошиды аяғынан ақсақ киік.\nШошиды ақырғы рет ақсақ киік,\nЖас қияқ жарасына кетсе тиіп,\nБейшара жер бетінен құтылғанша\nЖүрегі бітті білем жанып - күйіп."
+                },
+                {
+                    "title": "Тақ күні ту-дым",
+                    "text": "Тақ күні ту-дым,\nБалапаны қу-дың\nӨзім болдым. Ай-дын\nКөлге төсім шай-дым.\nҰштым,\nКеттім\nҮсін\nкөктің\nАралап ас-тым,\nӘніме бас-тым.\nЖетпей қалды жерден\nАтқан оғы мерген.\nТөре де\nКөре де\nар-ман-да;\nАтада,\nБата да,\nбар маң-да.\nТа-та-та,\nТа-та та,\nта?.."
+                },
+                {
+                    "title": "Ұшқалақ тотайлығын… (1-р хэсэг)",
+                    "text": "Ұшқалақ тотайлығын жиі қыла\nАсылды бәйбішенің иығына\nМомақан Құрманғазы кеш ілікті\nОйнақы қара көздің қиығына.\nБір сәтте қалды-дағы тыжырына\nСөйледі бәйбішеге қыз ұрына:\n– Бұл ағаш әзідегі дәруіш пе\nӘлдекім құшатұғын құзырына?!\nКім бұзған домбыраның мәні, шырқын\nҚұлағын бұрағансып... Бәлі, шіркін! –\nӘулекі жаралмаса адам деген\nӨзінің байқамай ма әлі сұрқын?!\nМаңдайын ұстағансып сәл бүгіліп,\nБұлайша ару бикеш салды қылық.\nҰшынан аяғының жүгіргіштеп\nІзінше домбыраны алды жұлып."
+                },
+                {
+                    "title": "Ұшқалақ тотайлығын… (2-р хэсэг)",
+                    "text": "– Бәрі, - дейді ол, –\nбармақтай бақ үшін-ау!..\nБақыттан тұл, сұм заман тағысын-ау?..\nТойдырып-ақ бітті ғой, қу құдайдың\nЖақсылығын жалынып тағы сұрау.\nАл, бақытты әр жерден шұқынып тап,\nБітір, зекет, салықтан сытылып қап!..\nСаған, қазақ, опасыз толқындардың\nОлжалысы күледі сықылықтап."
+                },
+                {
+                    "title": "Ұшқалақ тотайлығын… (3-р хэсэг)",
+                    "text": "...Түн бойы күрке бейне күрсінеді.\nӨмірдің алдамшы еді жалтырағы...\nБілмейсің қайда екенін жан тұрағы;\nБолса да бүгін сендік, ертең бөтен,\nЖартасы туған жердің, жапырағы.\nАлдында азабы айқын, бағы тұман.\n...Мен бе екем бақыт жолын тоспалайтын?!\nСұр заман қара құлпы тастан айқын...\nСор - азап, бейнет менің дұғалығым\nБойымнан қасиеттеп тастамайтын."
+                },
+                {
+                    "title": "Ұшқалақ тотайлығын… (4-р хэсэг)",
+                    "text": "...Елемей зекіргенін бір шалдың да,\nЕстімей десе біреу:\n– Қамшы алдың ба?\nТаянып екі жағын осы бала\nКүйшінің жатқан еді қарсы алдында.\n...Жиһазға қызыл-жасыл, көк – қаралы\nКөңілді өткір көзі көп қарады.\nЖалынды жас қонағын ишаратпен\nӘйел де көз астынан жеп барады.\n...Үстіне, басына да қара салған,\nБір уыс ару тұрқы аласарған.\nЖып-жылы жас бауырын бүлкілдетіп\nАқырын ақ мамасын бала сорған."
+                },
+                {
+                    "title": "Ұшқалақ тотайлығын… (5-р хэсэг)",
+                    "text": "Бүйірін таянады ентігіп кеп,\nОл солай өмір кешкен есіріп тек,\nМазағын мақтан қыла сөйлегенде\nҚамшыны көтереді екі бүктеп.\n...Желігіп желкесінде, маңдайында\nӘлі де ойнар еді көк қалпағы."
+                }
+            ]
+        };
+
+        let currentPoemIndex = 0;
+
+        function initGrid() {
+            const grid = document.getElementById('poemsGrid');
+            grid.innerHTML = '';
+            
+            poemsData.poems.forEach((poem, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'poem-btn';
+                btn.onclick = () => showPoem(index);
+                btn.innerHTML = `
+                    <div class="poem-number">${index + 1}</div>
+                    <div class="poem-title">${poem.title}</div>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        function showPoem(index) {
+            currentPoemIndex = index;
+            const poem = poemsData.poems[index];
+            
+            document.getElementById('counter').textContent = `Шүлэг ${index + 1} / ${poemsData.poems.length}`;
+            document.getElementById('poemNumberLarge').textContent = index + 1;
+            document.getElementById('poemTitleLarge').textContent = poem.title;
+            document.getElementById('poemTextLarge').textContent = poem.text;
+            
+            document.getElementById('gridView').style.display = 'none';
+            document.getElementById('poemView').classList.add('show');
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === poemsData.poems.length - 1;
+        }
+
+        function backToGrid() {
+            document.getElementById('gridView').style.display = 'block';
+            document.getElementById('poemView').classList.remove('show');
+        }
+
+        function prevPoem() {
+            if (currentPoemIndex > 0) {
+                showPoem(currentPoemIndex - 1);
+            }
+        }
+
+        function nextPoem() {
+            if (currentPoemIndex < poemsData.poems.length - 1) {
+                showPoem(currentPoemIndex + 1);
+            }
+        }
+
+        initGrid();
+    </script>
+</body>
 </html>
