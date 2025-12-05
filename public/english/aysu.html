@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="kk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Қазақ сөздік - Тест</title>
+    <title>Irregular Verbs Quiz</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             padding: 40px;
         }
@@ -76,7 +76,7 @@
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 20px;
-            min-height: 200px;
+            min-height: 250px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -90,11 +90,30 @@
             text-transform: uppercase;
         }
 
-        .question-text {
-            font-size: 24px;
-            color: #333;
+        .given-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
             margin-bottom: 20px;
+        }
+
+        .given-label {
+            color: #1565c0;
+            font-size: 14px;
             font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .given-text {
+            color: #0d47a1;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
         }
 
         .answer-reveal {
@@ -113,26 +132,18 @@
             opacity: 1;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .answer-label {
             color: #2e7d32;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
-        .answer-text {
+        .answer-item {
             color: #1b5e20;
             font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
         .controls {
@@ -151,7 +162,7 @@
             transition: all 0.3s ease;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
@@ -217,77 +228,90 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Қазақ сөздік - Тест</h1>
+            <h1>Irregular Verbs Quiz</h1>
         </div>
 
         <div id="loadingScreen" class="loading">
-            Жүктелуде...
+            Loading...
         </div>
 
         <div id="errorScreen" style="display: none;">
             <div class="error">
-                <strong>Қате орын алды!</strong><br>
-                hara_soz.json файлын жүктеу мүмкін болмады. Файл бар екеніне көз жеткізіңіз.
+                <strong>Error!</strong><br>
+                Could not load english.json file. Please make sure the file exists.
             </div>
         </div>
 
         <div id="quizScreen" style="display: none;">
-            <div class="counter" id="counter">Сұрақ 1 / 33</div>
+            <div class="counter" id="counter">Question 1 / 100</div>
             <div class="progress">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
 
             <div class="question-card">
-                <div class="question-type" id="questionType">Мағынасын табыңыз:</div>
-                <div class="question-text" id="questionText"></div>
+                <div class="question-type" id="questionType">Find the missing forms:</div>
+                
+                <div class="given-info">
+                    <div class="given-label" id="givenLabel">Given:</div>
+                    <div class="given-text" id="givenText"></div>
+                </div>
+
+                <div class="question-text" id="questionText">What are the other forms?</div>
+
                 <div class="answer-reveal" id="answerReveal">
-                    <div class="answer-label">Жауабы:</div>
-                    <div class="answer-text" id="answerText"></div>
+                    <div id="answersContainer"></div>
                 </div>
             </div>
 
             <div class="controls">
-                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">← Артқа</button>
-                <button class="btn btn-primary" id="showAnswerBtn" onclick="showAnswer()">Жауабын көрсету</button>
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">← Previous</button>
+                <button class="btn btn-primary" id="showAnswerBtn" onclick="showAnswer()">Show Answer</button>
             </div>
             <div class="controls" style="margin-top: 10px;">
-                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="width: 100%;">Келесі →</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="width: 100%;">Next →</button>
             </div>
         </div>
 
         <div class="completion-screen" id="completionScreen">
             <div class="completion-icon">🎉</div>
-            <div class="completion-text">Құттықтаймыз! Барлық сұрақты аяқтадыңыз!</div>
-            <button class="btn btn-restart" onclick="restart()">Қайта бастау</button>
+            <div class="completion-text">Congratulations! You've completed all questions!</div>
+            <button class="btn btn-restart" onclick="restart()">Restart Quiz</button>
         </div>
     </div>
 
     <script>
-        let vocabulary = [];
+        let verbs = [];
         let questions = [];
         let currentIndex = 0;
-        let answerShown = false;
+        let askedForms = new Set();
 
-        async function loadVocabulary() {
+        async function loadVerbs() {
             try {
-                const response = await fetch('hara_soz.json');
+                const response = await fetch('aysu.json');
                 if (!response.ok) {
-                    throw new Error('Файлды жүктеу мүмкін емес');
+                    throw new Error('Cannot load file');
                 }
-                vocabulary = await response.json();
+                verbs = await response.json();
                 
-                if (!Array.isArray(vocabulary) || vocabulary.length === 0) {
-                    throw new Error('Дұрыс емес деректер форматы');
+                if (!Array.isArray(verbs) || verbs.length === 0) {
+                    throw new Error('Invalid data format');
                 }
                 
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('quizScreen').style.display = 'block';
                 initQuiz();
             } catch (error) {
-                console.error('Қате:', error);
+                console.error('Error:', error);
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('errorScreen').style.display = 'block';
             }
+        }
+
+        function normalizeValue(val) {
+            if (Array.isArray(val)) {
+                return val;
+            }
+            return [val];
         }
 
         function shuffleArray(array) {
@@ -300,35 +324,79 @@
         }
 
         function initQuiz() {
-            questions = vocabulary.map(item => {
-                    return {
-                        question: item.word,      // асуулт → WORD
-                        answer: item.meaning,     // хариулт → MEANING
-                        type: 'meaning'           // төрлийг тогтмол meaning гэж тэмдэглэнэ
-                    };
+            questions = [];
+            askedForms.clear();
+
+            const forms = ['Infinitive', 'PastSimple', 'PastParticiple'];
+            
+            for (const verb of verbs) {
+                const availableForms = forms.filter(form => {
+                    const value = verb[form];
+                    const normalized = Array.isArray(value) ? value.join(',') : value;
+                    const key = `${normalized}`;
+                    return !askedForms.has(key);
                 });
+
+                if (availableForms.length === 0) continue;
+
+                const givenForm = availableForms[Math.floor(Math.random() * availableForms.length)];
+                const givenValue = verb[givenForm];
+                const givenKey = Array.isArray(givenValue) ? givenValue.join(',') : givenValue;
+                askedForms.add(givenKey);
+
+                const askedForms_arr = forms.filter(f => f !== givenForm);
+
+                questions.push({
+                    givenForm: givenForm,
+                    givenValue: normalizeValue(givenValue),
+                    askedForms: askedForms_arr,
+                    answers: {
+                        [askedForms_arr[0]]: normalizeValue(verb[askedForms_arr[0]]),
+                        [askedForms_arr[1]]: normalizeValue(verb[askedForms_arr[1]])
+                    }
+                });
+            }
+
             questions = shuffleArray(questions);
             displayQuestion();
         }
 
+        function getFormLabel(form) {
+            const labels = {
+                'Infinitive': 'Infinitive',
+                'PastSimple': 'Past Simple',
+                'PastParticiple': 'Past Participle'
+            };
+            return labels[form] || form;
+        }
+
         function displayQuestion() {
             const q = questions[currentIndex];
-            document.getElementById('counter').textContent = `Сұрақ ${currentIndex + 1} / ${questions.length}`;
+            document.getElementById('counter').textContent = `Question ${currentIndex + 1} / ${questions.length}`;
             document.getElementById('progressBar').style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
             
-            document.getElementById('questionType').textContent = 
-                q.type === 'meaning' ? 'Мағынасын табыңыз:' : 'Сөзді табыңыз:';
-            document.getElementById('questionText').textContent = q.question;
-            document.getElementById('answerText').textContent = q.answer;
+            document.getElementById('givenLabel').textContent = getFormLabel(q.givenForm) + ':';
+            document.getElementById('givenText').textContent = q.givenValue.join(' / ');
+            
+            const askedFormsText = q.askedForms.map(f => getFormLabel(f)).join(' and ');
+            document.getElementById('questionText').textContent = `What are the ${askedFormsText}?`;
+
+            let answersHTML = '';
+            for (const form of q.askedForms) {
+                const values = q.answers[form];
+                answersHTML += `
+                    <div class="answer-label">${getFormLabel(form)}:</div>
+                    <div class="answer-item">${values.join(' / ')}</div>
+                `;
+            }
+            document.getElementById('answersContainer').innerHTML = answersHTML;
             
             document.getElementById('answerReveal').classList.remove('show');
             document.getElementById('prevBtn').disabled = currentIndex === 0;
-            answerShown = false;
         }
 
         function showAnswer() {
             document.getElementById('answerReveal').classList.add('show');
-            answerShown = true;
         }
 
         function nextQuestion() {
@@ -355,7 +423,7 @@
             initQuiz();
         }
 
-        loadVocabulary();
+        loadVerbs();
     </script>
 </body>
 </html>
