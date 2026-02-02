@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="mn">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Ескендір – Random мөр</title>
-  <link rel="stylesheet" href="eskendir.css" />
+  <link rel="stylesheet" href="eskendir.css">
 </head>
 <body>
-
   <div class="app">
     <h1>Ескендір</h1>
+    <div id="question-container" class="question-box">
+      <p>Мөр хараах товч дарахад гарна...</p>
+    </div>
 
-    <div id="question-container" class="question-box"></div>
-
-    <button id="next-btn">Дараагийн мөр →</button>
+    <div class="controls">
+      <button id="prev-btn">← Өмнөх</button>
+      <button id="show-btn">Show Answer</button>
+      <button id="next-btn">Дараагийн →</button>
+    </div>
   </div>
 
   <script src="eskendir.js"></script>

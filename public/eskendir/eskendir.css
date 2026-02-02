@@ -1,78 +1,49 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  font-family: "Georgia", serif;
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
 }
 
 .app {
-  background: white;
-  width: 100%;
-  max-width: 700px;
-  padding: 40px;
-  border-radius: 18px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  width: 500px;
   text-align: center;
 }
 
-h1 {
-  color: #667eea;
-  margin-bottom: 25px;
-}
-
 .question-box {
-  background: #f8f9fa;
-  border-radius: 14px;
-  padding: 30px;
-  min-height: 160px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 25px;
+  min-height: 120px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  white-space: pre-wrap;
+  line-height: 1.6;
 }
 
-.question-box pre {
-  white-space: pre-wrap;
-  font-size: 20px;
-  line-height: 1.8;
+.controls button {
+  margin: 0 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#show-btn {
+  background-color: #ffca28;
   color: #333;
 }
 
-button {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none;
+#prev-btn, #next-btn {
+  background-color: #667eea;
   color: white;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 14px 28px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.25s ease;
 }
 
-button:hover {
+.controls button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-}
-
-button:active {
-  transform: scale(0.97);
-}
-
-@media (max-width: 600px) {
-  .app {
-    padding: 25px;
-  }
-
-  .question-box pre {
-    font-size: 17px;
-  }
 }

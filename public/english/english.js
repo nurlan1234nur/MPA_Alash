@@ -11,7 +11,7 @@ const showAnswerBtn = document.getElementById("show-answer-btn");
 
 async function loadWords() {
   try {
-    const response = await fetch('english.json');
+    const response = await fetch('aysu.json');
     const data = await response.json();
     words = data;
     shuffleWords();
