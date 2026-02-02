@@ -1,6 +1,7 @@
 // Load JSON data
 let verses = {};
-let usedVerses = [];
+let usedVerses = []; // Tracks which odd verses have been shown (for preventing duplicates)
+let history = []; // Tracks navigation history (for prev/next buttons)
 let currentVerseNumber = null;
 let showingAnswer = false;
 
@@ -19,27 +20,19 @@ fetch('eskendir.json')
 
 // Get random odd number that hasn't been used
 function getRandomOddNumber() {
-  const totalVerses = Object.keys(verses).length;
-  const oddNumbers = [];
+  const allOddNumbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
   
-  // Collect all odd numbers that haven't been used
-  for (let i = 1; i <= totalVerses; i += 2) {
-    if (!usedVerses.includes(i)) {
-      oddNumbers.push(i);
-    }
-  }
+  // Get odd numbers that haven't been used
+  const availableOdds = allOddNumbers.filter(num => !usedVerses.includes(num));
   
   // If all verses have been used, reset
-  if (oddNumbers.length === 0) {
+  if (availableOdds.length === 0) {
     usedVerses = [];
-    for (let i = 1; i <= totalVerses; i += 2) {
-      oddNumbers.push(i);
-    }
+    return allOddNumbers[Math.floor(Math.random() * allOddNumbers.length)];
   }
   
-  // Select random odd number
-  const randomIndex = Math.floor(Math.random() * oddNumbers.length);
-  return oddNumbers[randomIndex];
+  // Select random odd number from available ones
+  return availableOdds[Math.floor(Math.random() * availableOdds.length)];
 }
 
 // Display verse
@@ -83,7 +76,8 @@ function showAnswer() {
 // Show next random verse
 function showNextVerse() {
   const randomOdd = getRandomOddNumber();
-  usedVerses.push(randomOdd);
+  usedVerses.push(randomOdd); // Mark as used (never show again until reset)
+  history.push(randomOdd); // Add to navigation history
   displayVerse(randomOdd);
 }
 
@@ -93,15 +87,15 @@ document.getElementById('next-btn').addEventListener('click', showNextVerse);
 document.getElementById('show-btn').addEventListener('click', showAnswer);
 
 document.getElementById('prev-btn').addEventListener('click', () => {
-  if (usedVerses.length > 1) {
-    // Remove current verse from history
-    usedVerses.pop();
-    // Get previous verse
-    const prevVerse = usedVerses[usedVerses.length - 1];
+  if (history.length > 1) {
+    // Remove current from history
+    history.pop();
+    // Get previous verse from history
+    const prevVerse = history[history.length - 1];
     displayVerse(prevVerse);
-  } else if (usedVerses.length === 1) {
+  } else if (history.length === 1) {
     // Just redisplay the current verse
-    displayVerse(usedVerses[0]);
+    displayVerse(history[0]);
   }
 });
 
