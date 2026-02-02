@@ -1,101 +1,67 @@
-let questions = [];
-let currentIndex = 0;
-let shuffledIndices = [];
-
-const questionContainer = document.getElementById("question-container");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-const backBtn = document.getElementById("back-btn");
-//oorchlolttey
-// Fetch questions from JSON file
 async function loadQuestions() {
   try {
-    const response = await fetch(
-      "https://nurlan1234nur.github.io/MPA_Alash/eskendir/eskendir.json"
-    );
-    const data = await response.json();
-    // Convert the object to an array of questions
-    questions = Object.values(data);
+    const res = await fetch("./eskendir.json"); // ✅ ЗӨВ
+    const data = await res.json();
 
-    // Create and shuffle indices
-    shuffledIndices = Array.from({ length: questions.length }, (_, i) => i);
-    shuffleArray(shuffledIndices);
+    oddLines = Object.entries(data)
+      .filter(([key]) => Number(key) % 2 === 1)
+      .map(([, value]) => value);
 
-    renderQuestion();
-  } catch (error) {
-    console.error("Error loading questions:", error);
-    questionContainer.innerHTML =
-      '<p class="error-message">Асуултуудыг ачахад алдаа гарлаа</p>';
+    resetShuffle();
+    renderLine();
+  } catch (err) {
+    console.error("Fetch error:", err);
+    questionContainer.innerHTML = "JSON ачаалж чадсангүй";
   }
 }
 
-// Fisher-Yates shuffle algorithm
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
+function resetShuffle() {
+  shuffledIndices = Array.from(
+    { length: oddLines.length },
+    (_, i) => i
+  );
+  shuffleArray(shuffledIndices);
+  currentIndex = 0;
+}
+
+// Fisher-Yates shuffle
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  return array;
 }
 
-function renderQuestion() {
-  if (currentIndex >= questions.length) {
-    questionContainer.innerHTML =
-      '<p class="end-message">Бүх бадагууд дууссан!</p>';
-    nextBtn.style.display = "none";
-    return;
+function renderLine() {
+  // 🧠 БҮХ МӨР ДУУССАН → ДАХИН RANDOM
+  if (currentIndex >= shuffledIndices.length) {
+    resetShuffle();
   }
 
-  const questionIndex = shuffledIndices[currentIndex];
-  const question = questions[questionIndex];
-
-  // Replace \n with actual newline and split
-  const lines = question.replace(/\\n/g, "\n").split("\n");
+  const lineIndex = shuffledIndices[currentIndex];
+  const text = oddLines[lineIndex];
 
   questionContainer.innerHTML = `
-        <div class="question-box">
-            <p class="question-line">${lines[0]}</p>
-            <p class="question-line">${lines[1]}</p>
-        </div>
-    `;
-
-  // Update button states
-  prevBtn.style.display = currentIndex > 0 ? "block" : "none";
-  nextBtn.style.display =
-    currentIndex < questions.length - 1 ? "block" : "none";
+    <div class="question-box">
+      <pre>${text.replace(/\\n/g, "\n")}</pre>
+      <p style="opacity:.6; margin-top:10px;">
+        (${currentIndex + 1} / ${oddLines.length})
+      </p>
+    </div>
+  `;
 }
 
 nextBtn.onclick = () => {
-  if (currentIndex < questions.length - 1) {
+  currentIndex++;
+  renderLine();
+};
+
+// keyboard → →
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") {
     currentIndex++;
-    renderQuestion();
-  }
-};
-
-prevBtn.onclick = () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  }
-};
-
-backBtn.onclick = () => {
-  window.location.href = "../../index.html";
-};
-
-// Add keyboard navigation
-document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowLeft" && currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  } else if (
-    event.key === "ArrowRight" &&
-    currentIndex < questions.length - 1
-  ) {
-    currentIndex++;
-    renderQuestion();
+    renderLine();
   }
 });
 
-// Load questions when the page loads
 loadQuestions();
